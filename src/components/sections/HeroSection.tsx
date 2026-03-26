@@ -16,7 +16,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-[100svh] w-full flex flex-col items-center justify-between overflow-x-hidden"
     >
       {/* Background radial glows */}
       <div className="absolute inset-0 pointer-events-none">
@@ -45,9 +45,12 @@ export default function HeroSection() {
         />
       </div>
 
+      {/* Top spacer to balance the flex-between layout */}
+      <div className="w-full h-24 sm:h-32 shrink-0 pointer-events-none" />
+
       {/* Content */}
       <motion.div
-        className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6"
+        className="relative z-10 flex flex-col items-center justify-center text-center px-4 sm:px-6 shrink-0 my-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.2 }}
@@ -136,26 +139,28 @@ export default function HeroSection() {
       {/* 3D Viewer Modal */}
       <Pico3DViewer isOpen={show3D} onClose={() => setShow3D(false)} />
 
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
-      >
-        <span className="text-xs text-pico-gray/60 tracking-widest uppercase">Scroll</span>
+      {/* Scroll indicator container */}
+      <div className="w-full pb-8 pt-4 flex flex-col items-center justify-end shrink-0 pointer-events-none">
         <motion.div
-          className="w-5 h-8 rounded-full border border-pico-gray/30 flex items-start justify-center p-1"
-          animate={{ borderColor: ["rgba(156,163,175,0.3)", "rgba(0,229,255,0.3)", "rgba(156,163,175,0.3)"] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.8 }}
         >
+          <span className="text-xs text-pico-gray/60 tracking-widest uppercase pointer-events-none">Scroll</span>
           <motion.div
-            className="w-1.5 h-1.5 rounded-full bg-pico-cyan"
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          />
+            className="w-5 h-8 rounded-full border border-pico-gray/30 flex items-start justify-center p-1 pointer-events-none"
+            animate={{ borderColor: ["rgba(156,163,175,0.3)", "rgba(0,229,255,0.3)", "rgba(156,163,175,0.3)"] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <motion.div
+              className="w-1.5 h-1.5 rounded-full bg-pico-cyan"
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

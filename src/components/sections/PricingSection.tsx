@@ -61,8 +61,8 @@ export default function PricingSection() {
             {/* Price */}
             <div className="mb-6">
               <div className="flex items-center justify-center gap-3">
-                <span className="text-pico-gray line-through text-lg">$149</span>
-                <span className="text-4xl sm:text-5xl font-bold text-pico-white">$99</span>
+                <span className="text-pico-gray line-through text-lg">₹15,000</span>
+                <span className="text-4xl sm:text-5xl font-bold text-pico-white">₹3,500</span>
               </div>
               <p className="text-sm text-pico-gray mt-2">One-time purchase. No subscriptions.</p>
             </div>

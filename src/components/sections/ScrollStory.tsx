@@ -140,9 +140,7 @@ export default function ScrollStory() {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        <p className="text-sm uppercase tracking-[0.3em] text-pico-cyan mb-4">
-          The Story
-        </p>
+        
         <h2 className="text-3xl md:text-[40px] font-semibold text-pico-white">
           More than a machine
         </h2>

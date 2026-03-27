@@ -31,7 +31,7 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 md:p-8"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -46,9 +46,9 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
             exit={{ opacity: 0 }}
           />
 
-          {/* Content container — Edge-to-edge on mobile, large rounded card on tablet/desktop */}
+          {/* Content container — Floating Box on all screens */}
           <motion.div
-            className="relative z-10 w-full h-full sm:w-full sm:h-full sm:max-w-7xl sm:rounded-[2rem] overflow-hidden border-y sm:border border-white/10 sm:border-white/15"
+            className="relative z-10 w-full h-full max-h-[85vh] sm:w-[90vw] sm:h-[80vh] sm:max-w-6xl rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-[#00E5FF]/20 sm:border-white/15 shadow-[0_0_40px_rgba(0,229,255,0.05)]"
             style={{
               background:
                 "radial-gradient(ellipse at center, rgba(10,10,18,0.97) 0%, rgba(5,5,12,0.99) 100%)",
@@ -58,10 +58,10 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
             exit={{ scale: 0.95, opacity: 0, y: 10 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Close button — high contrast, safe-area aware */}
+            {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-[max(1.2rem,env(safe-area-inset-top,1.2rem))] right-[max(1.2rem,env(safe-area-inset-right,1.2rem))] z-30 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:text-white hover:bg-white/20 active:bg-white/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-lg backdrop-blur-sm"
+              className="absolute top-4 right-4 sm:top-5 sm:right-5 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:text-white hover:bg-white/20 active:bg-white/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-lg backdrop-blur-sm"
               aria-label="Close 3D viewer"
             >
               <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
@@ -74,28 +74,28 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
               </svg>
             </button>
 
-            {/* Title — safe-area aware */}
+            {/* Title */}
             <motion.div
-              className="absolute top-[max(1.5rem,env(safe-area-inset-top,1.5rem))] left-[max(1.5rem,env(safe-area-inset-left,1.5rem))] z-20"
+              className="absolute top-5 left-5 sm:top-6 sm:left-6 z-20"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.4 }}
             >
-              <h3 className="text-lg font-bold text-white tracking-wide">
+              <h3 className="text-base sm:text-lg font-bold text-white tracking-wide">
                 Pico <span className="text-[#00E5FF]">3D</span>
               </h3>
             </motion.div>
 
-            {/* Interaction hint — mobile-optimized */}
+            {/* Interaction hint */}
             <motion.div
-              className="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))] left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 md:gap-4 px-4 py-2md:px-5 md:py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-xl"
+              className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 md:gap-4 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-xl"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.4 }}
             >
-              <span className="text-[11px] md:text-sm font-medium text-white/80">Drag to rotate</span>
+              <span className="text-[10px] sm:text-[11px] md:text-sm font-medium text-white/80 whitespace-nowrap">Drag to rotate</span>
               <span className="text-white/30">·</span>
-              <span className="text-[11px] md:text-sm font-medium text-white/80">Pinch to zoom</span>
+              <span className="text-[10px] sm:text-[11px] md:text-sm font-medium text-white/80 whitespace-nowrap">Pinch to zoom</span>
             </motion.div>
 
             {/* Loading state */}

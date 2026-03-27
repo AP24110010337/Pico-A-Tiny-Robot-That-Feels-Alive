@@ -40,6 +40,15 @@ body {
   background: #334155;
 }
 
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ─── Glow animations ─── */
 @keyframes glow-pulse {
   0%, 100% { opacity: 0.4; }
@@ -117,7 +126,13 @@ body {
 
 /* ─── Section spacing ─── */
 .section-padding {
-  padding: 6rem 1.5rem;
+  padding: 4rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .section-padding {
+    padding: 6rem 1.5rem;
+  }
 }
 
 @media (min-width: 768px) {

@@ -2,7 +2,7 @@
 
 A modern, interactive product landing page for **Pico**, a small companion robot. Built with Next.js, React, and Three.js.
 
-🔗 **Live Demo:** [Deployed on Vercel](#) *(add your Vercel URL here after deployment)*
+🔗 **Live Demo:** [Deployed on Vercel](#) *https://pico-bot-busters.vercel.app/*
 
 
 

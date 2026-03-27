@@ -1,9 +1,90 @@
 "use client";
 
 import { useRef, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Float, Environment, ContactShadows } from "@react-three/drei";
+import { Canvas, useFrame, extend } from "@react-three/fiber";
+import { OrbitControls, Float, Environment, ContactShadows, shaderMaterial } from "@react-three/drei";
 import * as THREE from "three";
+
+/* ─── Fresnel edge glow shader (cyan outline matching eyes) ─── */
+const GlowEdgeShaderMaterial = shaderMaterial(
+  {
+    glowColor: new THREE.Color("#00E5FF"),
+    glowIntensity: 0.6,
+    glowPower: 2.5,
+    time: 0,
+  },
+  // Vertex shader
+  `
+    varying vec3 vNormal;
+    varying vec3 vViewDir;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+      vViewDir = normalize(-mvPos.xyz);
+      gl_Position = projectionMatrix * mvPos;
+    }
+  `,
+  // Fragment shader
+  `
+    uniform vec3 glowColor;
+    uniform float glowIntensity;
+    uniform float glowPower;
+    uniform float time;
+    varying vec3 vNormal;
+    varying vec3 vViewDir;
+    void main() {
+      float fresnel = 1.0 - abs(dot(vNormal, vViewDir));
+      fresnel = pow(fresnel, glowPower);
+      float pulse = 0.9 + 0.1 * sin(time * 1.5);
+      float alpha = fresnel * glowIntensity * pulse;
+      gl_FragColor = vec4(glowColor, alpha);
+    }
+  `
+);
+
+extend({ GlowEdgeShaderMaterial });
+
+// TypeScript declaration for the custom shader material
+declare module "@react-three/fiber" {
+  interface ThreeElements {
+    glowEdgeShaderMaterial: any;
+  }
+}
+
+/* ─── Reusable outline shell component ─── */
+function GlowOutline({
+  geometry,
+  scale = 1.04,
+  intensity = 0.6,
+  power = 2.5,
+}: {
+  geometry: THREE.BufferGeometry;
+  scale?: number;
+  intensity?: number;
+  power?: number;
+}) {
+  const matRef = useRef<any>(null);
+
+  useFrame(({ clock }) => {
+    if (matRef.current) {
+      matRef.current.uniforms.time.value = clock.elapsedTime;
+    }
+  });
+
+  return (
+    <mesh geometry={geometry} scale={scale}>
+      <glowEdgeShaderMaterial
+        ref={matRef}
+        transparent
+        depthWrite={false}
+        side={THREE.FrontSide}
+        glowColor={new THREE.Color("#00E5FF")}
+        glowIntensity={intensity}
+        glowPower={power}
+      />
+    </mesh>
+  );
+}
 
 /* ─── Rounded glowing LED eye ─── */
 function Eye({ position }: { position: [number, number, number] }) {
@@ -19,7 +100,6 @@ function Eye({ position }: { position: [number, number, number] }) {
   return (
     <group position={position}>
       <mesh ref={meshRef}>
-        {/* Rounded eye — slightly squished sphere */}
         <sphereGeometry args={[0.05, 24, 24]} />
         <meshStandardMaterial
           color="#00E5FF"
@@ -28,7 +108,7 @@ function Eye({ position }: { position: [number, number, number] }) {
           toneMapped={false}
         />
       </mesh>
-      <pointLight color="#00E5FF" intensity={1} distance={2} decay={2} />
+      <pointLight color="#00E5FF" intensity={1.5} distance={3} decay={2} />
     </group>
   );
 }
@@ -50,7 +130,6 @@ function Head() {
     return geo;
   }, []);
 
-  // Rounded face screen geometry — smooth corners
   const screenGeo = useMemo(() => {
     const geo = new THREE.BoxGeometry(0.38, 0.22, 0.03, 12, 12, 4);
     const pos = geo.attributes.position;
@@ -72,21 +151,27 @@ function Head() {
       <mesh geometry={headGeo}>
         <meshStandardMaterial
           color="#0a0a0f"
+          emissive="#00E5FF"
+          emissiveIntensity={0.03}
           metalness={0.3}
           roughness={0.7}
         />
       </mesh>
+      {/* Cyan edge glow on head */}
+      <GlowOutline geometry={headGeo} scale={1.02} intensity={0.7} power={2.8} />
 
-      {/* Face screen recess — rounded corners */}
+      {/* Face screen recess */}
       <mesh position={[0, -0.02, 0.33]} geometry={screenGeo}>
         <meshStandardMaterial
           color="#050508"
+          emissive="#00E5FF"
+          emissiveIntensity={0.02}
           metalness={0.1}
           roughness={0.9}
         />
       </mesh>
 
-      {/* Eyes — small rectangular LEDs, pushed well forward */}
+      {/* Eyes */}
       <Eye position={[-0.08, -0.01, 0.36]} />
       <Eye position={[0.08, -0.01, 0.36]} />
     </group>
@@ -95,17 +180,20 @@ function Head() {
 
 /* ─── Headphone band over the top ─── */
 function HeadphoneBand() {
+  const bandGeo = useMemo(() => new THREE.TorusGeometry(0.42, 0.025, 8, 32, Math.PI), []);
+
   return (
     <group position={[0, 0.95, 0]}>
-      {/* Band arc */}
-      <mesh rotation={[0, 0, 0]}>
-        <torusGeometry args={[0.42, 0.025, 8, 32, Math.PI]} />
+      <mesh rotation={[0, 0, 0]} geometry={bandGeo}>
         <meshStandardMaterial
           color="#0d0d14"
+          emissive="#00E5FF"
+          emissiveIntensity={0.04}
           metalness={0.8}
           roughness={0.25}
         />
       </mesh>
+      <GlowOutline geometry={bandGeo} scale={1.06} intensity={0.4} power={2.0} />
     </group>
   );
 }
@@ -113,19 +201,32 @@ function HeadphoneBand() {
 /* ─── Bulky round headphone cup ─── */
 function HeadphoneCup({ side }: { side: "left" | "right" }) {
   const sign = side === "left" ? -1 : 1;
+  const outerGeo = useMemo(() => new THREE.CylinderGeometry(0.13, 0.14, 0.1, 24), []);
 
   return (
     <group position={[sign * 0.42, 0.8, 0]}>
-      {/* Outer cup — rounded cylinder */}
-      <mesh rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.13, 0.14, 0.1, 24]} />
+      <mesh rotation={[0, 0, Math.PI / 2]} geometry={outerGeo}>
         <meshStandardMaterial
           color="#0a0a0f"
+          emissive="#00E5FF"
+          emissiveIntensity={0.03}
           metalness={0.4}
           roughness={0.6}
         />
       </mesh>
-      {/* Inner pad — darker */}
+      {/* Glow outline on cup */}
+      <mesh rotation={[0, 0, Math.PI / 2]} scale={1.05}>
+        <cylinderGeometry args={[0.13, 0.14, 0.1, 24]} />
+        <glowEdgeShaderMaterial
+          transparent
+          depthWrite={false}
+          side={THREE.FrontSide}
+          glowColor={new THREE.Color("#00E5FF")}
+          glowIntensity={0.4}
+          glowPower={2.5}
+        />
+      </mesh>
+      {/* Inner pad */}
       <mesh position={[sign * -0.03, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.1, 0.1, 0.05, 24]} />
         <meshStandardMaterial
@@ -142,6 +243,7 @@ function HeadphoneCup({ side }: { side: "left" | "right" }) {
 function Arm({ side }: { side: "left" | "right" }) {
   const ref = useRef<THREE.Group>(null);
   const sign = side === "left" ? -1 : 1;
+  const armGeo = useMemo(() => new THREE.CapsuleGeometry(0.06, 0.12, 8, 16), []);
 
   useFrame(({ clock }) => {
     if (ref.current) {
@@ -152,14 +254,16 @@ function Arm({ side }: { side: "left" | "right" }) {
 
   return (
     <group ref={ref} position={[sign * 0.36, 0.18, 0]}>
-      <mesh>
-        <capsuleGeometry args={[0.06, 0.12, 8, 16]} />
+      <mesh geometry={armGeo}>
         <meshStandardMaterial
           color="#0a0a0f"
+          emissive="#00E5FF"
+          emissiveIntensity={0.03}
           metalness={0.3}
           roughness={0.7}
         />
       </mesh>
+      <GlowOutline geometry={armGeo} scale={1.05} intensity={0.5} power={2.5} />
     </group>
   );
 }
@@ -167,15 +271,21 @@ function Arm({ side }: { side: "left" | "right" }) {
 /* ─── Flat oval feet ─── */
 function Foot({ side }: { side: "left" | "right" }) {
   const sign = side === "left" ? -1 : 1;
+  const footGeo = useMemo(() => new THREE.CapsuleGeometry(0.06, 0.04, 8, 16), []);
+
   return (
-    <mesh position={[sign * 0.13, -0.18, 0.03]} rotation={[Math.PI / 2, 0, 0]}>
-      <capsuleGeometry args={[0.06, 0.04, 8, 16]} />
-      <meshStandardMaterial
-        color="#0a0a0f"
-        metalness={0.3}
-        roughness={0.7}
-      />
-    </mesh>
+    <group position={[sign * 0.13, -0.18, 0.03]} rotation={[Math.PI / 2, 0, 0]}>
+      <mesh geometry={footGeo}>
+        <meshStandardMaterial
+          color="#0a0a0f"
+          emissive="#00E5FF"
+          emissiveIntensity={0.03}
+          metalness={0.3}
+          roughness={0.7}
+        />
+      </mesh>
+      <GlowOutline geometry={footGeo} scale={1.06} intensity={0.5} power={2.5} />
+    </group>
   );
 }
 
@@ -197,27 +307,38 @@ function Body() {
   }, []);
 
   return (
-    <mesh position={[0, 0.2, 0]} geometry={bodyGeo}>
-      <meshStandardMaterial
-        color="#0a0a0f"
-        metalness={0.3}
-        roughness={0.7}
-      />
-    </mesh>
+    <group position={[0, 0.2, 0]}>
+      <mesh geometry={bodyGeo}>
+        <meshStandardMaterial
+          color="#0a0a0f"
+          emissive="#00E5FF"
+          emissiveIntensity={0.03}
+          metalness={0.3}
+          roughness={0.7}
+        />
+      </mesh>
+      <GlowOutline geometry={bodyGeo} scale={1.03} intensity={0.6} power={2.5} />
+    </group>
   );
 }
 
 /* ─── Short neck connector ─── */
 function Neck() {
+  const neckGeo = useMemo(() => new THREE.CylinderGeometry(0.07, 0.09, 0.1, 12), []);
+
   return (
-    <mesh position={[0, 0.5, 0]}>
-      <cylinderGeometry args={[0.07, 0.09, 0.1, 12]} />
-      <meshStandardMaterial
-        color="#070710"
-        metalness={0.4}
-        roughness={0.6}
-      />
-    </mesh>
+    <group position={[0, 0.5, 0]}>
+      <mesh geometry={neckGeo}>
+        <meshStandardMaterial
+          color="#070710"
+          emissive="#00E5FF"
+          emissiveIntensity={0.03}
+          metalness={0.4}
+          roughness={0.6}
+        />
+      </mesh>
+      <GlowOutline geometry={neckGeo} scale={1.06} intensity={0.4} power={2.5} />
+    </group>
   );
 }
 
@@ -258,13 +379,17 @@ export default function Pico3D() {
       style={{ background: "transparent" }}
     >
       {/* Lighting — front fill + rim */}
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[3, 4, 5]} intensity={0.8} color="#ffffff" />
+      <ambientLight intensity={0.25} />
+      <directionalLight position={[3, 4, 5]} intensity={0.6} color="#ffffff" />
       <directionalLight position={[-2, 2, -3]} intensity={0.3} color="#6366F1" />
       {/* Front fill light so the face/eyes are always visible */}
-      <directionalLight position={[0, 0.5, 4]} intensity={0.5} color="#ffffff" />
-      {/* Back-rim light for silhouette feel */}
-      <directionalLight position={[0, 1, -4]} intensity={0.4} color="#4338CA" />
+      <directionalLight position={[0, 0.5, 4]} intensity={0.4} color="#ffffff" />
+      {/* Cyan-tinted rim lights for edge visibility */}
+      <directionalLight position={[0, 1, -4]} intensity={0.5} color="#00E5FF" />
+      <directionalLight position={[-3, 0, 0]} intensity={0.25} color="#00E5FF" />
+      <directionalLight position={[3, 0, 0]} intensity={0.25} color="#00E5FF" />
+      {/* Underneath subtle cyan fill */}
+      <directionalLight position={[0, -2, 0]} intensity={0.15} color="#00E5FF" />
 
       <Environment preset="night" />
 

@@ -162,10 +162,12 @@ export default function PicoRobot({
         <motion.ellipse
           cx={120 + eyeOffset.x}
           cy={114 + eyeOffset.y + eyes.yOffset}
-          rx={eyes.left.rx}
-          ry={eyes.left.ry}
           fill="#00E5FF"
           className="animate-blink"
+          initial={{
+            rx: eyes.left.rx,
+            ry: eyes.left.ry,
+          }}
           animate={{
             rx: eyes.left.rx,
             ry: eyes.left.ry,
@@ -179,10 +181,12 @@ export default function PicoRobot({
         <motion.ellipse
           cx={160 + eyeOffset.x}
           cy={114 + eyeOffset.y + eyes.yOffset}
-          rx={eyes.right.rx}
-          ry={eyes.right.ry}
           fill="#00E5FF"
           className="animate-blink"
+          initial={{
+            rx: eyes.right.rx,
+            ry: eyes.right.ry,
+          }}
           animate={{
             rx: eyes.right.rx,
             ry: eyes.right.ry,

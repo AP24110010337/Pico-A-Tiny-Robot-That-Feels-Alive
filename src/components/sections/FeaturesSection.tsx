@@ -148,7 +148,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
         </motion.div>
 
         {/* Content */}
-        <motion.div layout="position" className="relative z-10 p-6 md:p-8">
+        <motion.div layout="position" className="relative z-10 p-4 sm:p-6 md:p-8">
           {/* Icon + Title row */}
           <motion.div layout="position" className="flex items-start gap-4 mb-4">
             {/* Animated icon container */}

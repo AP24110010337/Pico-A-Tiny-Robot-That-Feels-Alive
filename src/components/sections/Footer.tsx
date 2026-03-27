@@ -8,7 +8,7 @@ import PicoRobot from "@/components/PicoRobot";
 export default function Footer() {
   return (
     <footer className="relative border-t border-white/5">
-      <div className="max-w-6xl mx-auto px-6 py-16">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
         <div className="flex flex-col items-center text-center">
           {/* Mini Pico */}
           <motion.div

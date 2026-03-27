@@ -15,11 +15,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pico — A Tiny Robot That Feels Alive",
+  title: "Pico — A Tiny Robot That Feels Alive | Bot Busters",
   description:
     "Meet Pico, the expressive robot companion that reacts, rests, plays, and connects. Not just a device — a presence.",
+  icons: {
+    icon: "/images/bot-busters-logo.jpg",
+    apple: "/images/bot-busters-logo.jpg",
+  },
   openGraph: {
-    title: "Pico — A Tiny Robot That Feels Alive",
+    title: "Pico — A Tiny Robot That Feels Alive | Bot Busters",
     description:
       "Meet Pico, the expressive robot companion that reacts, rests, plays, and connects.",
     type: "website",

@@ -59,7 +59,7 @@ function SceneBlock({ scene, index }: { scene: StoryScene; index: number }) {
   return (
     <div
       ref={ref}
-      className="min-h-[70vh] sm:min-h-[80vh] lg:min-h-screen flex items-center justify-center relative snap-start py-12 sm:py-0"
+      className="min-h-[60vh] sm:min-h-[80vh] lg:min-h-screen flex items-center justify-center relative snap-start py-10 sm:py-12 lg:py-0"
       id={index === 0 ? "story" : undefined}
     >
       {/* Background glow for this scene */}
@@ -88,7 +88,7 @@ function SceneBlock({ scene, index }: { scene: StoryScene; index: number }) {
           className={`${index % 2 === 1 ? "lg:order-2" : ""}`}
         >
           <PicoRobot
-            size={140}
+            size={100}
             expression={isInView ? scene.expression : "normal"}
             enableTracking={isInView}
           />
@@ -103,10 +103,10 @@ function SceneBlock({ scene, index }: { scene: StoryScene; index: number }) {
           }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-[44px] font-semibold leading-tight text-pico-white mb-2 sm:mb-3">
+          <h2 className="text-xl sm:text-3xl md:text-[44px] font-semibold leading-tight text-pico-white mb-2 sm:mb-3">
             {scene.text}
           </h2>
-          <p className="text-lg sm:text-xl md:text-2xl text-pico-cyan font-medium">
+          <p className="text-base sm:text-xl md:text-2xl text-pico-cyan font-medium">
             {scene.subtext}
           </p>
 
@@ -132,16 +132,14 @@ function SceneBlock({ scene, index }: { scene: StoryScene; index: number }) {
 export default function ScrollStory() {
   return (
     <section className="relative">
-      {/* Section intro */}
       <motion.div
-        className="text-center py-20 px-6"
+        className="text-center py-12 sm:py-20 px-6"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        
-        <h2 className="text-3xl md:text-[40px] font-semibold text-pico-white">
+        <h2 className="text-2xl sm:text-3xl md:text-[40px] font-semibold text-pico-white">
           More than a machine
         </h2>
       </motion.div>

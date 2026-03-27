@@ -31,7 +31,7 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-8"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-8 overflow-hidden touch-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -46,12 +46,11 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
             exit={{ opacity: 0 }}
           />
 
-          {/* Content container — Floating Box on all screens */}
+          {/* Content container — Strictly contained strictly within viewport */}
           <motion.div
-            className="relative z-10 w-full h-full max-h-[85vh] sm:w-[90vw] sm:h-[80vh] sm:max-w-6xl rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-[#00E5FF]/20 sm:border-white/15 shadow-[0_0_40px_rgba(0,229,255,0.05)]"
+            className="relative z-10 w-full h-[95vh] sm:h-[80vh] max-w-full sm:max-w-6xl rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-[#00E5FF]/20 sm:border-white/15 shadow-[0_0_40px_rgba(0,229,255,0.05)] mx-auto"
             style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(10,10,18,0.97) 0%, rgba(5,5,12,0.99) 100%)",
+              background: "radial-gradient(ellipse at center, rgba(10,10,18,0.97) 0%, rgba(5,5,12,0.99) 100%)",
             }}
             initial={{ scale: 0.95, opacity: 0, y: 10 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -65,12 +64,7 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
               aria-label="Close 3D viewer"
             >
               <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M4 4L12 12M12 4L4 12"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
+                <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
               </svg>
             </button>
 
@@ -88,7 +82,7 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
 
             {/* Interaction hint */}
             <motion.div
-              className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 md:gap-4 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-xl"
+              className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 shadow-xl"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.4 }}
@@ -102,23 +96,13 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
             <Suspense
               fallback={
                 <div className="w-full h-full flex items-center justify-center">
-                  <motion.div
-                    className="flex flex-col items-center gap-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
+                  <motion.div className="flex flex-col items-center gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <motion.div
                       className="w-10 h-10 rounded-full border-[3px] border-[#00E5FF]/20 border-t-[#00E5FF]"
                       animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                     />
-                    <span className="text-sm font-medium text-white/50 tracking-wide">
-                      Loading 3D model…
-                    </span>
+                    <span className="text-sm font-medium text-white/50 tracking-wide">Loading 3D model…</span>
                   </motion.div>
                 </div>
               }

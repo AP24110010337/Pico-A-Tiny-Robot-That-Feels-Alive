@@ -74,20 +74,15 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
               </svg>
             </button>
 
-            {/* Bot Busters Logo */}
+            {/* Title */}
             <motion.div
-              className="absolute top-4 left-4 z-20 flex items-center gap-2.5"
+              className="absolute top-4 left-6 z-20"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.4 }}
             >
-              <img
-                src="/images/bot-busters-logo.jpg"
-                alt="Bot Busters"
-                className="w-9 h-9 rounded-full object-cover border border-white/15 shadow-[0_0_12px_rgba(0,229,255,0.2)]"
-              />
-              <h3 className="text-base font-semibold text-white/90 tracking-wide">
-                Bot <span className="text-[#00E5FF]">Busters</span>
+              <h3 className="text-lg font-semibold text-white/90">
+                Pico <span className="text-[#00E5FF]">3D</span>
               </h3>
             </motion.div>
 

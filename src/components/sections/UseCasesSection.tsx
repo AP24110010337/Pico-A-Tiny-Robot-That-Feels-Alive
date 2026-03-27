@@ -100,8 +100,8 @@ function UseCaseCard({
 }: {
   useCase: UseCase;
   index: number;
-  activeIndex: number;
-  onSelect: (i: number) => void;
+  activeIndex: number | null;
+  onSelect: (i: number | null) => void;
 }) {
   const isActive = activeIndex === index;
 
@@ -110,7 +110,7 @@ function UseCaseCard({
       className={`relative w-full text-left rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ${
         isActive ? "col-span-1 md:col-span-2" : "col-span-1"
       }`}
-      onClick={() => onSelect(index)}
+      onClick={() => onSelect(isActive ? null : index)}
       layout
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -328,7 +328,7 @@ function UseCaseCard({
 }
 
 export default function UseCasesSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
@@ -339,10 +339,10 @@ export default function UseCasesSection() {
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
           style={{
-            background: `radial-gradient(circle, ${useCases[activeIndex].bgGlow} 0%, transparent 60%)`,
+            background: `radial-gradient(circle, ${activeIndex !== null ? useCases[activeIndex].bgGlow : 'transparent'} 0%, transparent 60%)`,
           }}
           animate={{
-            background: `radial-gradient(circle, ${useCases[activeIndex].bgGlow} 0%, transparent 60%)`,
+            background: `radial-gradient(circle, ${activeIndex !== null ? useCases[activeIndex].bgGlow : 'transparent'} 0%, transparent 60%)`,
           }}
           transition={{ duration: 0.8 }}
         />
@@ -364,7 +364,7 @@ export default function UseCasesSection() {
           {useCases.map((uc, i) => (
             <button
               key={i}
-              onClick={() => setActiveIndex(i)}
+              onClick={() => setActiveIndex(activeIndex === i ? null : i)}
               className="group flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 cursor-pointer"
               style={{
                 background: activeIndex === i ? `${uc.color}15` : "transparent",

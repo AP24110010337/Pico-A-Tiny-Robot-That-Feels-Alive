@@ -153,7 +153,7 @@ function UseCaseCard({
           />
         </motion.div>
 
-        <div className="relative z-10 p-6 md:p-8">
+        <div className="relative z-10 p-4 sm:p-6 md:p-8">
           {/* Header */}
           <div className="flex items-center gap-4 mb-4">
             {/* Icon */}
@@ -337,7 +337,7 @@ export default function UseCasesSection() {
       {/* Ambient background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[500px] h-[280px] sm:h-[500px] rounded-full"
           style={{
             background: `radial-gradient(circle, ${activeIndex !== null ? useCases[activeIndex].bgGlow : 'transparent'} 0%, transparent 60%)`,
           }}
@@ -356,7 +356,7 @@ export default function UseCasesSection() {
 
         {/* Use-case selector dots */}
         <motion.div
-          className="flex items-center justify-center gap-3 mb-10"
+          className="flex items-center justify-center gap-1 sm:gap-3 mb-8 sm:mb-10 flex-wrap"
           initial={{ opacity: 0, y: 10 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -365,14 +365,14 @@ export default function UseCasesSection() {
             <button
               key={i}
               onClick={() => setActiveIndex(activeIndex === i ? null : i)}
-              className="group flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 cursor-pointer"
+              className="group flex items-center gap-2 px-3 py-2.5 sm:px-3 sm:py-2 rounded-full transition-all duration-300 cursor-pointer min-w-[44px] min-h-[44px] justify-center"
               style={{
                 background: activeIndex === i ? `${uc.color}15` : "transparent",
                 border: `1px solid ${activeIndex === i ? `${uc.color}30` : "transparent"}`,
               }}
             >
               <motion.div
-                className="w-2 h-2 rounded-full"
+                className="w-2.5 h-2.5 sm:w-2 sm:h-2 rounded-full"
                 style={{ background: uc.color }}
                 animate={{
                   scale: activeIndex === i ? 1.3 : 1,

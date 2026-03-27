@@ -46,9 +46,9 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
             exit={{ opacity: 0 }}
           />
 
-          {/* Content container */}
+          {/* Content container — fullscreen on mobile with subtle border, card on desktop */}
           <motion.div
-            className="relative z-10 w-full h-full sm:w-[90vw] sm:h-[80vh] sm:max-w-5xl sm:rounded-3xl overflow-hidden border-0 sm:border border-white/10"
+            className="relative z-10 w-full h-full sm:w-[90vw] sm:h-[80vh] sm:max-w-5xl sm:rounded-3xl overflow-hidden border border-[#00E5FF]/15 sm:border-white/10"
             style={{
               background:
                 "radial-gradient(ellipse at center, rgba(10,10,18,0.97) 0%, rgba(5,5,12,0.99) 100%)",
@@ -58,37 +58,37 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Close button */}
+            {/* Close button — larger on mobile, safe-area aware */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer"
+              className="absolute top-[max(1rem,env(safe-area-inset-top,1rem))] right-4 z-30 w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/10 sm:bg-white/5 border border-white/20 sm:border-white/10 flex items-center justify-center text-white/80 sm:text-white/60 hover:text-white hover:bg-white/15 active:bg-white/20 transition-all duration-200 cursor-pointer shadow-lg sm:shadow-none"
               aria-label="Close 3D viewer"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" className="sm:w-4 sm:h-4">
                 <path
                   d="M4 4L12 12M12 4L4 12"
                   stroke="currentColor"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   strokeLinecap="round"
                 />
               </svg>
             </button>
 
-            {/* Title */}
+            {/* Title — safe-area aware */}
             <motion.div
-              className="absolute top-4 left-6 z-20"
+              className="absolute top-[max(1.1rem,env(safe-area-inset-top,1.1rem))] left-4 sm:left-6 z-20"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.4 }}
             >
-              <h3 className="text-lg font-semibold text-white/90">
+              <h3 className="text-base sm:text-lg font-semibold text-white/90">
                 Pico <span className="text-[#00E5FF]">3D</span>
               </h3>
             </motion.div>
 
-            {/* Interaction hint */}
+            {/* Interaction hint — mobile-optimized */}
             <motion.div
-              className="absolute bottom-4 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/5 border border-white/10"
+              className="absolute bottom-[max(1rem,env(safe-area-inset-bottom,1rem))] sm:bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/5 border border-white/10"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.4 }}
@@ -96,8 +96,6 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
               <span className="text-[10px] sm:text-xs text-white/50">Drag to rotate</span>
               <span className="text-white/20">·</span>
               <span className="text-[10px] sm:text-xs text-white/50">Pinch to zoom</span>
-              <span className="text-white/20">·</span>
-              <span className="text-xs text-white/50">Right-drag to pan</span>
             </motion.div>
 
             {/* Loading state */}
@@ -134,3 +132,4 @@ export default function Pico3DViewer({ isOpen, onClose }: Pico3DViewerProps) {
     </AnimatePresence>
   );
 }
+

@@ -373,49 +373,51 @@ function PicoModel() {
 /* ─── Full 3D Scene ─── */
 export default function Pico3D() {
   return (
-    <Canvas
-      camera={{ position: [0, 0.6, 2.5], fov: 40 }}
-      gl={{ antialias: true, alpha: true }}
-      style={{ background: "transparent" }}
-    >
-      {/* Lighting — front fill + rim */}
-      <ambientLight intensity={0.25} />
-      <directionalLight position={[3, 4, 5]} intensity={0.6} color="#ffffff" />
-      <directionalLight position={[-2, 2, -3]} intensity={0.3} color="#6366F1" />
-      {/* Front fill light so the face/eyes are always visible */}
-      <directionalLight position={[0, 0.5, 4]} intensity={0.4} color="#ffffff" />
-      {/* Cyan-tinted rim lights for edge visibility */}
-      <directionalLight position={[0, 1, -4]} intensity={0.5} color="#00E5FF" />
-      <directionalLight position={[-3, 0, 0]} intensity={0.25} color="#00E5FF" />
-      <directionalLight position={[3, 0, 0]} intensity={0.25} color="#00E5FF" />
-      {/* Underneath subtle cyan fill */}
-      <directionalLight position={[0, -2, 0]} intensity={0.15} color="#00E5FF" />
+    <div style={{ width: "100%", height: "100%", minHeight: 0 }}>
+      <Canvas
+        camera={{ position: [0, 0.5, 3.2], fov: 55 }}
+        gl={{ antialias: true, alpha: true }}
+        style={{ background: "transparent", width: "100%", height: "100%" }}
+      >
+        {/* Lighting — front fill + rim */}
+        <ambientLight intensity={0.25} />
+        <directionalLight position={[3, 4, 5]} intensity={0.6} color="#ffffff" />
+        <directionalLight position={[-2, 2, -3]} intensity={0.3} color="#6366F1" />
+        {/* Front fill light so the face/eyes are always visible */}
+        <directionalLight position={[0, 0.5, 4]} intensity={0.4} color="#ffffff" />
+        {/* Cyan-tinted rim lights for edge visibility */}
+        <directionalLight position={[0, 1, -4]} intensity={0.5} color="#00E5FF" />
+        <directionalLight position={[-3, 0, 0]} intensity={0.25} color="#00E5FF" />
+        <directionalLight position={[3, 0, 0]} intensity={0.25} color="#00E5FF" />
+        {/* Underneath subtle cyan fill */}
+        <directionalLight position={[0, -2, 0]} intensity={0.15} color="#00E5FF" />
 
-      <Environment preset="night" />
+        <Environment preset="night" />
 
-      <PicoModel />
+        <PicoModel />
 
-      <ContactShadows
-        position={[0, -0.25, 0]}
-        opacity={0.4}
-        scale={3}
-        blur={2.5}
-        far={2}
-        color="#1e1b4b"
-      />
+        <ContactShadows
+          position={[0, -0.25, 0]}
+          opacity={0.4}
+          scale={3}
+          blur={2.5}
+          far={2}
+          color="#1e1b4b"
+        />
 
-      <OrbitControls
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        autoRotate
-        autoRotateSpeed={0.8}
-        minDistance={1.2}
-        maxDistance={5}
-        minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI / 1.5}
-        target={[0, 0.45, 0]}
-      />
-    </Canvas>
+        <OrbitControls
+          enablePan={false}
+          enableZoom={true}
+          enableRotate={true}
+          autoRotate
+          autoRotateSpeed={0.8}
+          minDistance={1.5}
+          maxDistance={6}
+          minPolarAngle={Math.PI / 6}
+          maxPolarAngle={Math.PI / 1.5}
+          target={[0, 0.45, 0]}
+        />
+      </Canvas>
+    </div>
   );
 }

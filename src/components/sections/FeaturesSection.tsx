@@ -101,56 +101,38 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
 
   return (
     <motion.div
-      layout
       className="relative cursor-pointer"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       onClick={() => setIsExpanded(!isExpanded)}
+      style={{ willChange: "transform" }}
     >
       {/* Card */}
-      <motion.div
-        layout
-        className="relative overflow-hidden rounded-2xl border border-white/[0.06] backdrop-blur-xl"
+      <div
+        className="relative overflow-hidden rounded-2xl border transition-colors duration-300"
         style={{
           background: isExpanded
             ? `linear-gradient(135deg, rgba(15,23,42,0.8), rgba(15,23,42,0.5))`
             : "rgba(15, 23, 42, 0.4)",
-        }}
-        whileHover={{
-          y: -6,
-          borderColor: `${feature.color}33`,
-          transition: { duration: 0.3, ease: "easeOut" },
-        }}
-        whileTap={{ scale: 0.98 }}
-        animate={{
+          backdropFilter: "blur(12px)",
           borderColor: isExpanded ? `${feature.color}44` : "rgba(255,255,255,0.06)",
         }}
-        transition={{ layout: { duration: 0.5, ease: [0.4, 0, 0.2, 1] } }}
       >
-        {/* Animated background glow */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          animate={{
+        {/* Animated background glow — opacity only, no blur repaints */}
+        <div
+          className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-500"
+          style={{
             opacity: isExpanded ? 1 : 0,
+            background: `radial-gradient(circle at top right, ${feature.bgGlow} 0%, transparent 70%)`,
           }}
-          transition={{ duration: 0.5 }}
-        >
-          <div
-            className="absolute -top-20 -right-20 w-60 h-60 rounded-full blur-3xl"
-            style={{ background: feature.bgGlow }}
-          />
-          <div
-            className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-2xl"
-            style={{ background: feature.bgGlow, opacity: 0.5 }}
-          />
-        </motion.div>
+        />
 
         {/* Content */}
-        <motion.div layout="position" className="relative z-10 p-4 sm:p-6 md:p-8">
+        <div className="relative z-10 p-4 sm:p-6 md:p-8">
           {/* Icon + Title row */}
-          <motion.div layout="position" className="flex items-start gap-4 mb-4">
+          <div className="flex items-start gap-4 mb-4">
             {/* Animated icon container */}
             <motion.div
               className="shrink-0 w-14 h-14 rounded-xl flex items-center justify-center"
@@ -216,7 +198,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
                 />
               </svg>
             </motion.div>
-          </motion.div>
+          </div>
 
           {/* Expanded content */}
           <AnimatePresence>
@@ -226,41 +208,25 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{
-                  height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
-                  opacity: { duration: 0.3, delay: 0.1 },
+                  height: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
+                  opacity: { duration: 0.25, delay: 0.05 },
                 }}
                 className="overflow-hidden"
+                style={{ willChange: "height, opacity" }}
               >
                 {/* Divider */}
-                <motion.div
+                <div
                   className="h-px mb-5"
                   style={{
                     background: `linear-gradient(to right, transparent, ${feature.color}30, transparent)`,
                   }}
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.5, delay: 0.15 }}
                 />
 
-                {/* Full description with word-by-word pop */}
+                {/* Full description */}
                 <div className="space-y-3">
-                  <motion.p className="text-sm text-pico-gray/90 leading-relaxed">
-                    {feature.fullDesc.split(" ").map((word, wi) => (
-                      <motion.span
-                        key={wi}
-                        initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                        transition={{
-                          duration: 0.3,
-                          delay: 0.2 + wi * 0.02,
-                          ease: "easeOut",
-                        }}
-                        className="inline-block mr-[0.3em]"
-                      >
-                        {word}
-                      </motion.span>
-                    ))}
-                  </motion.p>
+                  <p className="text-sm text-pico-gray/90 leading-relaxed">
+                    {feature.fullDesc}
+                  </p>
 
                   {/* Animated stat bar */}
                   <motion.div
@@ -296,7 +262,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
         {/* Bottom glow line */}
         <motion.div
@@ -307,7 +273,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
           animate={{ opacity: isExpanded ? 0.6 : 0, scaleX: isExpanded ? 1 : 0 }}
           transition={{ duration: 0.5 }}
         />
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

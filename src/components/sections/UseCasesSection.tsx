@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import PicoRobot from "@/components/PicoRobot";
 
@@ -295,74 +295,17 @@ function UseCaseCard({
 
 export default function UseCasesSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="use-cases" className="section-padding relative" ref={sectionRef}>
-      {/* Ambient background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[500px] h-[280px] sm:h-[500px] rounded-full"
-          style={{
-            background: `radial-gradient(circle, ${activeIndex !== null ? useCases[activeIndex].bgGlow : 'transparent'} 0%, transparent 60%)`,
-          }}
-          animate={{
-            background: `radial-gradient(circle, ${activeIndex !== null ? useCases[activeIndex].bgGlow : 'transparent'} 0%, transparent 60%)`,
-          }}
-          transition={{ duration: 0.8 }}
-        />
-      </div>
-
+    <section id="use-cases" className="section-padding relative">
       <div className="max-w-5xl mx-auto relative z-10">
         <SectionHeading
           title="Designed for your life"
           subtitle="Whether you're working, studying, or simply resting — Pico adapts to your rhythm."
         />
 
-        {/* Use-case selector dots */}
-        <motion.div
-          className="flex items-center justify-center gap-1 sm:gap-3 mb-8 sm:mb-10 flex-wrap"
-          initial={{ opacity: 0, y: 10 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          {useCases.map((uc, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveIndex(activeIndex === i ? null : i)}
-              className="group flex items-center gap-2 px-3 py-2.5 sm:px-3 sm:py-2 rounded-full transition-all duration-300 cursor-pointer min-w-[44px] min-h-[44px] justify-center"
-              style={{
-                background: activeIndex === i ? `${uc.color}15` : "transparent",
-                border: `1px solid ${activeIndex === i ? `${uc.color}30` : "transparent"}`,
-              }}
-            >
-              <motion.div
-                className="w-2.5 h-2.5 sm:w-2 sm:h-2 rounded-full"
-                style={{ background: uc.color }}
-                animate={{
-                  scale: activeIndex === i ? 1.3 : 1,
-                  opacity: activeIndex === i ? 1 : 0.4,
-                }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="text-xs font-medium overflow-hidden whitespace-nowrap"
-                style={{ color: uc.color }}
-                animate={{
-                  width: activeIndex === i ? "auto" : 0,
-                  opacity: activeIndex === i ? 1 : 0,
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                {uc.title}
-              </motion.span>
-            </button>
-          ))}
-        </motion.div>
-
-        {/* Cards grid */}
-        <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5" layout>
+        {/* Cards grid — 2 top, 2 bottom, accordion: one open at a time */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
           {useCases.map((uc, i) => (
             <UseCaseCard
               key={i}
@@ -372,7 +315,7 @@ export default function UseCasesSection() {
               onSelect={setActiveIndex}
             />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

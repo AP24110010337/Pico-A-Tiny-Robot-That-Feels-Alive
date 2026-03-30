@@ -107,51 +107,34 @@ function UseCaseCard({
 
   return (
     <motion.button
-      className={`relative w-full text-left rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ${
-        isActive ? "col-span-1 md:col-span-2" : "col-span-1"
-      }`}
+      className="relative w-full text-left rounded-2xl overflow-hidden cursor-pointer"
       onClick={() => onSelect(isActive ? null : index)}
-      layout
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.1,
-        layout: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
-      }}
-      whileHover={!isActive ? { y: -4, transition: { duration: 0.25 } } : undefined}
-      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      style={{ willChange: "transform" }}
     >
       {/* Card background */}
-      <motion.div
-        className="relative h-full rounded-2xl border overflow-hidden"
+      <div
+        className="relative h-full rounded-2xl border overflow-hidden transition-colors duration-300"
         style={{
           background: isActive
             ? `linear-gradient(145deg, rgba(15,23,42,0.85), rgba(15,23,42,0.5))`
             : "rgba(15, 23, 42, 0.4)",
-          backdropFilter: "blur(16px)",
-        }}
-        animate={{
+          backdropFilter: "blur(12px)",
           borderColor: isActive ? `${useCase.color}40` : "rgba(255,255,255,0.06)",
+          willChange: "border-color",
         }}
-        transition={{ duration: 0.4 }}
       >
-        {/* Background glow blobs */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          animate={{ opacity: isActive ? 1 : 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div
-            className="absolute -top-16 -right-16 w-48 h-48 rounded-full blur-3xl"
-            style={{ background: useCase.bgGlow }}
-          />
-          <div
-            className="absolute -bottom-12 -left-12 w-36 h-36 rounded-full blur-2xl"
-            style={{ background: useCase.bgGlow, opacity: 0.4 }}
-          />
-        </motion.div>
+        {/* Background glow — opacity only, no blur repaints */}
+        <div
+          className="absolute inset-0 pointer-events-none rounded-2xl transition-opacity duration-500"
+          style={{
+            opacity: isActive ? 1 : 0,
+            background: `radial-gradient(circle at top right, ${useCase.bgGlow} 0%, transparent 70%)`,
+          }}
+        />
 
         <div className="relative z-10 p-4 sm:p-6 md:p-8">
           {/* Header */}
@@ -224,43 +207,26 @@ function UseCaseCard({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{
-                  height: { duration: 0.45, ease: [0.4, 0, 0.2, 1] },
-                  opacity: { duration: 0.35, delay: 0.1 },
+                  height: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
+                  opacity: { duration: 0.25, delay: 0.05 },
                 }}
                 className="overflow-hidden"
+                style={{ willChange: "height, opacity" }}
               >
                 {/* Divider */}
-                <motion.div
+                <div
                   className="h-px mb-5"
                   style={{
                     background: `linear-gradient(to right, transparent, ${useCase.color}30, transparent)`,
                   }}
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
                 />
 
                 <div className="flex flex-col md:flex-row gap-6 items-start">
                   {/* Text content */}
                   <div className="flex-1 space-y-4">
-                    {/* Description with word-by-word reveal */}
-                    <motion.p className="text-sm text-pico-gray/90 leading-relaxed">
-                      {useCase.description.split(" ").map((word, wi) => (
-                        <motion.span
-                          key={wi}
-                          className="inline-block mr-[0.3em]"
-                          initial={{ opacity: 0, y: 6, filter: "blur(3px)" }}
-                          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                          transition={{
-                            duration: 0.25,
-                            delay: 0.15 + wi * 0.018,
-                            ease: "easeOut",
-                          }}
-                        >
-                          {word}
-                        </motion.span>
-                      ))}
-                    </motion.p>
+                    <p className="text-sm text-pico-gray/90 leading-relaxed">
+                      {useCase.description}
+                    </p>
 
                     {/* Detail chips */}
                     <div className="flex flex-wrap gap-2 pt-1">
@@ -322,7 +288,7 @@ function UseCaseCard({
           }}
           transition={{ duration: 0.5 }}
         />
-      </motion.div>
+      </div>
     </motion.button>
   );
 }

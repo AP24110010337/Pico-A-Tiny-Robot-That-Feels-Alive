@@ -96,8 +96,18 @@ const features: Feature[] = [
   },
 ];
 
-function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+function FeatureCard({
+  feature,
+  index,
+  activeIndex,
+  onSelect,
+}: {
+  feature: Feature;
+  index: number;
+  activeIndex: number | null;
+  onSelect: (i: number | null) => void;
+}) {
+  const isExpanded = activeIndex === index;
 
   return (
     <motion.div
@@ -106,7 +116,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      onClick={() => setIsExpanded(!isExpanded)}
+      onClick={() => onSelect(isExpanded ? null : index)}
       style={{ willChange: "transform" }}
     >
       {/* Card */}
@@ -279,6 +289,8 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
 }
 
 export default function FeaturesSection() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
   return (
     <section id="features" className="section-padding relative">
       {/* Top divider */}
@@ -316,15 +328,15 @@ export default function FeaturesSection() {
         />
 
         {/* Bento-style layout: 2 top, 3 bottom */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
           {features.slice(0, 2).map((f, i) => (
-            <FeatureCard key={i} feature={f} index={i} />
+            <FeatureCard key={i} feature={f} index={i} activeIndex={activeIndex} onSelect={setActiveIndex} />
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5 items-start">
           {features.slice(2).map((f, i) => (
-            <FeatureCard key={i + 2} feature={f} index={i + 2} />
+            <FeatureCard key={i + 2} feature={f} index={i + 2} activeIndex={activeIndex} onSelect={setActiveIndex} />
           ))}
         </div>
       </div>

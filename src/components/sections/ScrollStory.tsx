@@ -110,19 +110,6 @@ function SceneBlock({ scene, index }: { scene: StoryScene; index: number }) {
             {scene.subtext}
           </p>
 
-          {/* Scene indicator */}
-          <div className="mt-8 flex items-center gap-2 justify-center lg:justify-start">
-            {scenes.map((_, i) => (
-              <div
-                key={i}
-                className={`h-1 rounded-full transition-all duration-500 ${
-                  i === index
-                    ? "w-8 bg-pico-cyan"
-                    : "w-2 bg-pico-gray/30"
-                }`}
-              />
-            ))}
-          </div>
         </motion.div>
       </div>
     </div>
